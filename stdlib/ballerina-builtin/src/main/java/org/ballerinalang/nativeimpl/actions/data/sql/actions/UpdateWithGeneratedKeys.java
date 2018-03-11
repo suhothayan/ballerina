@@ -15,7 +15,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.ballerinalang.nativeimpl.actions.data.sql.client;
+package org.ballerinalang.nativeimpl.actions.data.sql.actions;
 
 import org.ballerinalang.bre.Context;
 import org.ballerinalang.connector.api.ConnectorFuture;
@@ -60,14 +60,15 @@ public class UpdateWithGeneratedKeys extends AbstractSQLAction {
         String query = getStringArgument(context, 0);
         BRefValueArray parameters = (BRefValueArray) getRefArgument(context, 1);
         BStringArray keyColumns = (BStringArray) getRefArgument(context, 2);
-        BMap sharedMap = (BMap) bConnector.getRefField(2);
-        SQLDatasource datasource = null;
-        if (sharedMap.get(new BString(Constants.DATASOURCE_KEY)) != null) {
-            datasource = (SQLDatasource) sharedMap.get(new BString(Constants.DATASOURCE_KEY));
-        } else {
-            throw new BallerinaException("Datasource have not been initialized properly at " +
-                    "Init native action invocation.");
-        }
+        SQLDatasource datasource = (SQLDatasource) bConnector.getNativeData(Constants.CLIENT_CONNECTOR);
+//        BMap sharedMap = (BMap) bConnector.getRefField(2);
+//        SQLDatasource datasource = null;
+//        if (sharedMap.get(new BString(Constants.DATASOURCE_KEY)) != null) {
+//            datasource = (SQLDatasource) sharedMap.get(new BString(Constants.DATASOURCE_KEY));
+//        } else {
+//            throw new BallerinaException("Datasource have not been initialized properly at " +
+//                    "Init native action invocation.");
+//        }
         executeUpdateWithKeys(context, datasource, query, keyColumns, parameters);
         ClientConnectorFuture future = new ClientConnectorFuture();
         future.notifySuccess();

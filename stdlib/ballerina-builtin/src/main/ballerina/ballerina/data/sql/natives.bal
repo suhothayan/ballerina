@@ -49,14 +49,14 @@ public struct Parameter {
 @Field {value:"leakDetectionThreshold: Amount of time that a connection can be out of the pool before a message is logged indicating a possible connection leak"}
 @Field {value:"datasourceProperties: Data source specific properties which are used along with the dataSourceClassName"}
 public struct ConnectionProperties {
-	string url;
-	string dataSourceClassName;
-	string connectionTestQuery;
-	string poolName;
-	string catalog;
-	string connectionInitSql;
-	string driverClassName;
-	string transactionIsolation;
+	string url = "";
+	string dataSourceClassName = "";
+	string connectionTestQuery= "";
+	string poolName = "";
+	string catalog = "";
+	string connectionInitSql = "";
+	string driverClassName = "";
+	string transactionIsolation = "";
 	boolean autoCommit = true;
 	boolean isolateInternalQueries;
 	boolean allowPoolSuspension;
@@ -175,6 +175,10 @@ public enum Direction {
 	INOUT
 }
 
+///////////////////////////////
+// SQL Client Connector
+///////////////////////////////
+
 @Description { value:"The Client Connector for SQL databases."}
 @Param { value:"dbType: SQL database type" }
 @Param { value:"hostOrPath: Host name of the database or file path for file based database" }
@@ -221,6 +225,52 @@ public connector ClientConnector (DB dbType, string hostOrPath, int port, string
 	@Return { value:"Updated row count during the query exectuion" }
 	@Return { value:"Array of auto generated key values during the query execution" }
 	native action updateWithGeneratedKeys (string query, Parameter[] parameters, string[] keyColumns) (int, string[]);
+}
+
+///////////////////////////////
+// SQL Client Endpoint
+///////////////////////////////
+
+public struct ClientEndpoint {
+	string epName;
+	ClientEndpointConfiguration config;
+}
+
+public struct ClientEndpointConfiguration {
+	DB database;
+	string host;
+	int port;
+	string name;
+	string username;
+	string password;
+	ConnectionProperties options;
+}
+
+@Description { value:"Gets called when the endpoint is being initialize during package init time"}
+@Param { value:"epName: The endpoint name" }
+@Param { value:"config: The ClientEndpointConfiguration of the endpoint" }
+public function <ClientEndpoint ep> init (string epName, ClientEndpointConfiguration config) {
+	ep.epName = epName;
+	ep.config = config;
+	ep.initEndpoint();
+}
+
+public native function<ClientEndpoint ep> initEndpoint();
+
+@Description { value:"Returns the connector that client code uses"}
+@Return { value:"The connector that client code uses" }
+public native function <ClientEndpoint ep> getConnector () returns (ClientConnector repConn);
+
+public function <ClientEndpoint ep> register (type serviceType){
 
 }
 
+public function <ClientEndpoint ep> start (){
+
+}
+
+@Description { value:"Stops the registered service"}
+@Return { value:"Error occured during registration" }
+public function <ClientEndpoint ep> stop () {
+
+}
