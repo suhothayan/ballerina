@@ -72,6 +72,10 @@ public struct ConnectionProperties {
 	map datasourceProperties;
 }
 
+public function<ConnectionProperties c> ConnectionProperties () {
+	c.datasourceProperties = {};
+}
+
 @Description { value:"The Databases which has direct parameter support."}
 @Field { value:"MYSQL: MySQL DB with connection url in the format of  jdbc:mysql://[HOST]:[PORT]/[database]"}
 @Field { value:"SQLSERVER: SQL Server DB with connection url in the format of jdbc:sqlserver://[HOST]:[PORT];databaseName=[database]"}
@@ -238,12 +242,17 @@ public struct ClientEndpoint {
 
 public struct ClientEndpointConfiguration {
 	DB database;
-	string host;
-	int port;
-	string name;
-	string username;
-	string password;
+	string host = "";
+	int port = 0;
+	string name = "";
+	string username = "";
+	string password = "";
 	ConnectionProperties options;
+}
+
+public function <ClientEndpointConfiguration c> ClientEndpointConfiguration () {
+	c.database = DB.GENERIC;
+	c.options = null;
 }
 
 @Description { value:"Gets called when the endpoint is being initialize during package init time"}
