@@ -20,6 +20,8 @@ package org.ballerinalang.nativeimpl.actions.data.sql;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.ballerinalang.connector.api.Struct;
+import org.ballerinalang.connector.api.Value;
+import org.ballerinalang.connector.impl.StructImpl;
 import org.ballerinalang.model.types.BType;
 import org.ballerinalang.model.values.BBoolean;
 import org.ballerinalang.model.values.BFloat;
@@ -29,6 +31,7 @@ import org.ballerinalang.model.values.BRefType;
 import org.ballerinalang.model.values.BString;
 import org.ballerinalang.model.values.BStruct;
 import org.ballerinalang.model.values.BValue;
+import org.ballerinalang.model.values.BValueType;
 import org.ballerinalang.util.exceptions.BallerinaException;
 
 import java.io.File;
@@ -36,6 +39,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import javax.sql.XADataSource;
@@ -111,9 +115,7 @@ public class SQLDatasource implements BValue {
             config.setPassword(password);
             if (options != null) {
                 boolean isXA = options.getBooleanField(Constants.Options.IS_XA);
-                //TODO:
-                //BMap<String, BRefType> dataSourceConfigMap = (BMap) options.getMapField(Constants.Options.DATASOURCE_PROPERTIES);
-                BMap<String, BRefType> dataSourceConfigMap = new BMap<>();
+                BMap<String, BRefType> dataSourceConfigMap = populatePropertiesMap(options);
                 String jdbcurl = options.getStringField(Constants.Options.URL);
                 String dataSourceClassName = options.getStringField(Constants.Options.DATASOURCE_CLASSNAME);
                 if (!dataSourceClassName.isEmpty()) {
@@ -206,7 +208,33 @@ public class SQLDatasource implements BValue {
         }
     }
 
-    private BMap<String, BRefType> setDataSourceProperties(BMap<String, BRefType> dataSourceConfigMap, String jdbcurl,
+    private BMap<String, BRefType> populatePropertiesMap(Struct options) {
+        Map<String, Value> dataSourceConfigMap = options.getMapField(Constants.Options.DATASOURCE_PROPERTIES);
+        BMap<String, BRefType> mapProperties = new BMap<>();
+        for (Map.Entry<String, Value> entry : dataSourceConfigMap.entrySet()) {
+            Value propValue = entry.getValue();
+            BRefType dataValue = null;
+            switch (propValue.getType()) {
+            case INT:
+                dataValue = new BInteger(propValue.getIntValue());
+                break;
+            case FLOAT:
+                dataValue = new BFloat(propValue.getFloatValue());
+                break;
+            case BOOLEAN:
+                dataValue = new BBoolean(propValue.getBooleanValue());
+                break;
+            case NULL:
+                break;
+            default:
+                dataValue = new BString(propValue.getStringValue());
+            }
+            mapProperties.put(entry.getKey(), dataValue);
+        }
+        return mapProperties;
+    }
+
+    private BMap<String, BRefType> setDataSourceProperties(BMap<String, BRefType>  dataSourceConfigMap, String jdbcurl,
             String username, String password, String dbType, String hostOrPath, int port, String dbName) {
         if (dataSourceConfigMap != null) {
             if (dataSourceConfigMap.get(Constants.URL) == null) {
