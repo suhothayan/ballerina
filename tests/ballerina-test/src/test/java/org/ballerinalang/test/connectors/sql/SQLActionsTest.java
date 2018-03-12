@@ -52,7 +52,7 @@ public class SQLActionsTest {
 
     @BeforeClass
     public void setup() {
-        result = BCompileUtil.compile("test-src/connectors/sql/sql-actions.bal");
+        result = BCompileUtil.compile("test-src/connectors/sql/sql-actions-test.bal");
         resultNegative = BCompileUtil.compile("test-src/connectors/sql/sql-actions-negative.bal");
         SQLDBUtils.deleteFiles(new File(SQLDBUtils.DB_DIRECTORY), DB_NAME);
         SQLDBUtils.initDatabase(SQLDBUtils.DB_DIRECTORY, DB_NAME, "datafiles/sql/SQLConnectorDataFile.sql");
@@ -442,13 +442,6 @@ public class SQLActionsTest {
         Assert.assertEquals(retValue.stringValue(), expected);
     }
 
-    @Test(dependsOnGroups = "ConnectorTest")
-    public void testCloseConnectionPool() {
-        BValue[] returns = BRunUtil.invoke(result, "testCloseConnectionPool");
-        BInteger retValue = (BInteger) returns[0];
-        Assert.assertEquals(retValue.intValue(), 1);
-    }
-
     @Test(groups = "ConnectorTest", description = "Check blob binary and clob types types.")
     public void testComplexTypeRetrieval() {
         BValue[] args = {};
@@ -510,6 +503,13 @@ public class SQLActionsTest {
                   + "index 0.*")
     public void testInvalidArrayofQueryParameters() {
         BRunUtil.invoke(resultNegative, "testInvalidArrayofQueryParameters");
+    }
+
+    @Test(dependsOnGroups = "ConnectorTest")
+    public void testCloseConnectionPool() {
+        BValue[] returns = BRunUtil.invoke(result, "testCloseConnectionPool");
+        BInteger retValue = (BInteger) returns[0];
+        Assert.assertEquals(retValue.intValue(), 1);
     }
 
     @AfterSuite
