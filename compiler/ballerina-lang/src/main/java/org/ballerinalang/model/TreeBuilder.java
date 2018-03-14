@@ -67,7 +67,9 @@ import org.ballerinalang.model.tree.expressions.IntRangeExpression;
 import org.ballerinalang.model.tree.expressions.InvocationNode;
 import org.ballerinalang.model.tree.expressions.LambdaFunctionNode;
 import org.ballerinalang.model.tree.expressions.LiteralNode;
+import org.ballerinalang.model.tree.expressions.NamedArgNode;
 import org.ballerinalang.model.tree.expressions.RecordLiteralNode;
+import org.ballerinalang.model.tree.expressions.RestArgsNode;
 import org.ballerinalang.model.tree.expressions.SimpleVariableReferenceNode;
 import org.ballerinalang.model.tree.expressions.StringTemplateLiteralNode;
 import org.ballerinalang.model.tree.expressions.TableQueryExpression;
@@ -90,12 +92,14 @@ import org.ballerinalang.model.tree.statements.BindNode;
 import org.ballerinalang.model.tree.statements.BlockNode;
 import org.ballerinalang.model.tree.statements.BreakNode;
 import org.ballerinalang.model.tree.statements.CatchNode;
+import org.ballerinalang.model.tree.statements.CompoundAssignmentNode;
 import org.ballerinalang.model.tree.statements.ExpressionStatementNode;
 import org.ballerinalang.model.tree.statements.ForeachNode;
 import org.ballerinalang.model.tree.statements.ForkJoinNode;
 import org.ballerinalang.model.tree.statements.IfNode;
 import org.ballerinalang.model.tree.statements.LockNode;
 import org.ballerinalang.model.tree.statements.NextNode;
+import org.ballerinalang.model.tree.statements.PostIncrementNode;
 import org.ballerinalang.model.tree.statements.QueryStatementNode;
 import org.ballerinalang.model.tree.statements.ReturnNode;
 import org.ballerinalang.model.tree.statements.StreamingQueryStatementNode;
@@ -165,7 +169,9 @@ import org.wso2.ballerinalang.compiler.tree.expressions.BLangIntRangeExpression;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangInvocation;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangLambdaFunction;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangLiteral;
+import org.wso2.ballerinalang.compiler.tree.expressions.BLangNamedArgsExpression;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangRecordLiteral;
+import org.wso2.ballerinalang.compiler.tree.expressions.BLangRestArgsExpression;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangSimpleVarRef;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangStringTemplateLiteral;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangTableQueryExpression;
@@ -189,12 +195,14 @@ import org.wso2.ballerinalang.compiler.tree.statements.BLangBind;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangBlockStmt;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangBreak;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangCatch;
+import org.wso2.ballerinalang.compiler.tree.statements.BLangCompoundAssignment;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangExpressionStmt;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangForeach;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangForkJoin;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangIf;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangLock;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangNext;
+import org.wso2.ballerinalang.compiler.tree.statements.BLangPostIncrement;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangQueryStatement;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangReturn;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangStreamingQueryStatement;
@@ -396,6 +404,14 @@ public class TreeBuilder {
         return new BLangAssignment();
     }
 
+    public static CompoundAssignmentNode createCompoundAssignmentNode() {
+        return new BLangCompoundAssignment();
+    }
+
+    public static PostIncrementNode createPostIncrementNode() {
+        return new BLangPostIncrement();
+    }
+
     public static BindNode createBindNode() {
         return new BLangBind();
     }
@@ -583,6 +599,14 @@ public class TreeBuilder {
 
     public static TableQueryExpression createTableQueryExpression() {
         return new BLangTableQueryExpression();
+    }
+
+    public static RestArgsNode createVarArgsNode() {
+        return new BLangRestArgsExpression();
+    }
+
+    public static NamedArgNode createNamedArgNode() {
+        return new BLangNamedArgsExpression();
     }
 
     public static SetAssignmentNode createSetAssignmentNode() {

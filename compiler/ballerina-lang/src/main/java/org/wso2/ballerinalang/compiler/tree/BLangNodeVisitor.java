@@ -58,12 +58,14 @@ import org.wso2.ballerinalang.compiler.tree.expressions.BLangInvocation.BLangAct
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangInvocation.BLangTransformerInvocation;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangLambdaFunction;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangLiteral;
+import org.wso2.ballerinalang.compiler.tree.expressions.BLangNamedArgsExpression;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangRecordLiteral;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangRecordLiteral.BLangJSONLiteral;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangRecordLiteral.BLangMapLiteral;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangRecordLiteral.BLangStreamLiteral;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangRecordLiteral.BLangStructLiteral;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangRecordLiteral.BLangTableLiteral;
+import org.wso2.ballerinalang.compiler.tree.expressions.BLangRestArgsExpression;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangSimpleVarRef;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangSimpleVarRef.BLangFieldVarRef;
 import org.wso2.ballerinalang.compiler.tree.expressions.BLangSimpleVarRef.BLangFunctionVarRef;
@@ -91,12 +93,14 @@ import org.wso2.ballerinalang.compiler.tree.statements.BLangBind;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangBlockStmt;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangBreak;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangCatch;
+import org.wso2.ballerinalang.compiler.tree.statements.BLangCompoundAssignment;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangExpressionStmt;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangForeach;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangForkJoin;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangIf;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangLock;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangNext;
+import org.wso2.ballerinalang.compiler.tree.statements.BLangPostIncrement;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangQueryStatement;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangReturn;
 import org.wso2.ballerinalang.compiler.tree.statements.BLangStreamingQueryStatement;
@@ -239,6 +243,14 @@ public abstract class BLangNodeVisitor {
     }
 
     public void visit(BLangAssignment assignNode) {
+        throw new AssertionError();
+    }
+
+    public void visit(BLangPostIncrement increment) {
+        throw new AssertionError();
+    }
+
+    public void visit(BLangCompoundAssignment compoundAssignNode) {
         throw new AssertionError();
     }
 
@@ -483,6 +495,14 @@ public abstract class BLangNodeVisitor {
     }
 
     public void visit(BLangTableQueryExpression tableQueryExpression) {
+        throw new AssertionError();
+    }
+
+    public void visit(BLangRestArgsExpression bLangVarArgsExpression) {
+        throw new AssertionError();
+    }
+
+    public void visit(BLangNamedArgsExpression bLangNamedArgsExpression) {
         throw new AssertionError();
     }
 
