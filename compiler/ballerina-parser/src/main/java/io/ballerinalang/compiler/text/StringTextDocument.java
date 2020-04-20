@@ -23,7 +23,7 @@ import io.ballerinalang.compiler.text.TextLineMap.TextLine;
 public class StringTextDocument extends TextDocument {
     private final String text;
 
-    StringTextDocument(String text) {
+    public StringTextDocument(String text) {
         this.text = text;
     }
 
