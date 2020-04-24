@@ -304,10 +304,7 @@ public class BallerinaDocumentServiceImpl implements BallerinaDocumentService {
             TextDocument doc = new StringTextDocument(documentManager.getFileContent(compilationPath));
             SyntaxTreeMapGenerator mapGenerator = new SyntaxTreeMapGenerator();
             SyntaxTree syntaxTree = BLModules.parse(doc);
-            Map<String, Object> transform = mapGenerator.transform(syntaxTree.getModulePart());
-            Gson gson = new Gson();
-            JsonElement jsonElement = gson.toJsonTree(transform);
-            reply.setSyntaxTree(jsonElement);
+            reply.setSyntaxTree(mapGenerator.transform(syntaxTree.getModulePart()));
             reply.setParseSuccess(true);
         } catch (Throwable e) {
             reply.setParseSuccess(false);
@@ -352,10 +349,7 @@ public class BallerinaDocumentServiceImpl implements BallerinaDocumentService {
             documentManager.updateFile(compilationPath, updatedTree.toString());
 
             SyntaxTreeMapGenerator mapGenerator = new SyntaxTreeMapGenerator();
-            Map<String, Object> transform = mapGenerator.transform(updatedTree.getModulePart());
-            Gson gson = new Gson();
-            JsonElement jsonElement = gson.toJsonTree(transform);
-            reply.setSyntaxTree(jsonElement);
+            reply.setSyntaxTree( mapGenerator.transform(updatedTree.getModulePart()));
             reply.setParseSuccess(true);
         } catch (Throwable e) {
             reply.setParseSuccess(false);
