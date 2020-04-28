@@ -6,30 +6,10 @@ import { toSocket } from "vscode-ws-jsonrpc";
 import * as serverRPC from "vscode-ws-jsonrpc/lib/server";
 import { Server } from "ws";
 
-const LS_DEBUG = process.env.LS_DEBUG === "true";
-const LS_CUSTOM_CLASSPATH = process.env.LS_CUSTOM_CLASSPATH;
-
 export function spawnStdioServer(ballerinaHome: string): ChildProcess {
-    let cmd;
-    const cwd = path.join(ballerinaHome, "lib", "tools", "lang-server", "launcher");
-    const args: string[] = [];
-    if (process.platform === "win32") {
-        cmd = path.join(cwd, "language-server-launcher.bat");
-    } else {
-        cmd = "sh";
-        args.push(path.join(cwd, "language-server-launcher.sh"));
-    }
-
-    // always run with experimental features enabled
-    args.push("--experimental");
-
-    if (LS_DEBUG) {
-        args.push("--debug");
-    }
-    if (LS_CUSTOM_CLASSPATH) {
-        args.push("--classpath", LS_CUSTOM_CLASSPATH);
-    }
-    return spawn(cmd, args, { cwd });
+    const cmd = path.join(ballerinaHome, "bin", "ballerina");
+    const args = ["start-language-server"];
+    return spawn(cmd, args);
 }
 
 export function spawnWSServer(ballerinaHome: string, port: number)

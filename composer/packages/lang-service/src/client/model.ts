@@ -31,8 +31,19 @@ export interface GetASTParams {
     };
 }
 
+export interface GetSyntaxTreeParams {
+    documentIdentifier: {
+        uri: string;
+    };
+}
+
 export interface GetASTResponse {
     ast: BallerinaAST;
+    parseSuccess: boolean;
+}
+
+export interface GetSyntaxTreeResponse {
+    syntaxTree: any;
     parseSuccess: boolean;
 }
 
