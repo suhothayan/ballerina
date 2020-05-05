@@ -3,7 +3,6 @@
 // tslint:disable:ban-types
 export interface STNode {
   kind: string;
-  value: any;
   parent?: STNode;
 }
 
@@ -13,22 +12,54 @@ export interface AbstractKeyword extends STNode {
 }
 
 export interface Annotation extends STNode {
-  annotReference: QualifiedIdentifier;
+  annotReference: QualifiedNameReference;
   annotValue: MappingConstructor;
   atToken: AtToken;
 }
 
-export interface ArrayType extends STNode {
+export interface AnyKeyword extends STNode {
+  isToken: boolean;
+  value: string;
+}
+
+export interface AnyTypeDesc extends STNode {
+  name: AnyKeyword;
+}
+
+export interface AnydataKeyword extends STNode {
+  isToken: boolean;
+  value: string;
+}
+
+export interface AnydataTypeDesc extends STNode {
+  name: AnydataKeyword;
+}
+
+export interface ArrayTypeDesc extends STNode {
+  arrayLengthNode?: AsteriskToken | DecimalIntegerLiteral;
   closeBracketToken: CloseBracketToken;
   openBracketToken: OpenBracketToken;
-  typeDescriptorNode: SimpleType;
+  typeDescriptorNode:
+    | AnyTypeDesc
+    | AnydataTypeDesc
+    | ArrayTypeDesc
+    | ByteTypeDesc
+    | IntTypeDesc
+    | SimpleNameReference
+    | StringTypeDesc;
 }
 
 export interface AssignmentStatement extends STNode {
   equalsToken: EqualToken;
-  expression: IdentifierToken | MemberAccess;
+  expression:
+    | CheckExpression
+    | DecimalFloatingPointLiteral
+    | DecimalIntegerLiteral
+    | MemberAccess
+    | SimpleNameReference
+    | StringLiteral;
   semicolonToken: SemicolonToken;
-  varRef: FieldAccess | MemberAccess;
+  varRef: FieldAccess | MemberAccess | SimpleNameReference;
 }
 
 export interface AsteriskToken extends STNode {
@@ -46,27 +77,93 @@ export interface BinaryExpression extends STNode {
     | DecimalIntegerLiteral
     | FieldAccess
     | FunctionCall
-    | IdentifierToken
+    | MethodCall
+    | SimpleNameReference
     | StringLiteral;
-  operator: AsteriskToken | LtToken | PlusToken;
-  rhsExpr: BinaryExpression | FieldAccess | FunctionCall | IdentifierToken;
+  operator:
+    | AsteriskToken
+    | BitwiseAndToken
+    | BitwiseXorToken
+    | DoubleEqualToken
+    | LtToken
+    | PipeToken
+    | PlusToken;
+  rhsExpr:
+    | BinaryExpression
+    | DecimalFloatingPointLiteral
+    | DecimalIntegerLiteral
+    | FieldAccess
+    | FunctionCall
+    | SimpleNameReference
+    | StringLiteral;
+}
+
+export interface BitwiseAndToken extends STNode {
+  isToken: boolean;
+  value: string;
+}
+
+export interface BitwiseXorToken extends STNode {
+  isToken: boolean;
+  value: string;
 }
 
 export interface BlockStatement extends STNode {
   closeBraceToken: CloseBraceToken;
   openBraceToken: OpenBraceToken;
-  statements: Array<AssignmentStatement | CallStatement>;
+  statements: Array<
+    | AssignmentStatement
+    | CallStatement
+    | CompoundAssignmentStatement
+    | ContinueStatement
+    | IfElseStatement
+    | LocalVarDecl
+    | ReturnStatement
+  >;
+}
+
+export interface BooleanKeyword extends STNode {
+  isToken: boolean;
+  value: string;
+}
+
+export interface BooleanTypeDesc extends STNode {
+  name: BooleanKeyword;
 }
 
 export interface BracedExpression extends STNode {
   closeParen: CloseParenToken;
-  expression: BinaryExpression | TypeTestExpression;
+  expression:
+    | BinaryExpression
+    | MemberAccess
+    | MethodCall
+    | StringLiteral
+    | TypeTestExpression;
   openParen: OpenParenToken;
+}
+
+export interface ByteKeyword extends STNode {
+  isToken: boolean;
+  value: string;
+}
+
+export interface ByteTypeDesc extends STNode {
+  name: ByteKeyword;
 }
 
 export interface CallStatement extends STNode {
   expression: FunctionCall | MethodCall;
   semicolonToken: SemicolonToken;
+}
+
+export interface CheckExpression extends STNode {
+  checkKeyword: CheckKeyword;
+  expression: MethodCall;
+}
+
+export interface CheckKeyword extends STNode {
+  isToken: boolean;
+  value: string;
 }
 
 export interface CloseBracePipeToken extends STNode {
@@ -102,17 +199,70 @@ export interface CommaToken extends STNode {
 export interface CompoundAssignmentStatement extends STNode {
   binaryOperator: PlusToken;
   equalsToken: EqualToken;
-  lhsExpression: IdentifierToken;
+  lhsExpression: SimpleNameReference;
   rhsExpression: DecimalIntegerLiteral;
   semicolonToken: SemicolonToken;
 }
 
-export interface DecimalIntegerLiteral extends STNode {
+export interface ComputedNameField extends STNode {
+  closeBracket: CloseBracketToken;
+  colonToken: ColonToken;
+  fieldNameExpr: BracedExpression;
+  openBracket: OpenBracketToken;
+  valueExpr: FunctionCall;
+}
+
+export interface ConstDeclaration extends STNode {
+  constKeyword: ConstKeyword;
+  equalsToken: EqualToken;
+  initializer: ListConstructor;
+  metadata: Metadata;
+  semicolonToken: SemicolonToken;
+  variableName: SimpleNameReference;
+}
+
+export interface ConstKeyword extends STNode {
   isToken: boolean;
   value: string;
 }
 
+export interface ContinueKeyword extends STNode {
+  isToken: boolean;
+  value: string;
+}
+
+export interface ContinueStatement extends STNode {
+  continueToken: ContinueKeyword;
+  semicolonToken: SemicolonToken;
+}
+
+export interface DecimalFloatingPointLiteral extends STNode {
+  isToken?: boolean;
+  literalToken?: DecimalFloatingPointLiteral;
+  value?: string;
+}
+
+export interface DecimalIntegerLiteral extends STNode {
+  isToken?: boolean;
+  literalToken?: DecimalIntegerLiteral;
+  value?: string;
+}
+
+export interface DocumentationLine extends STNode {
+  isToken: boolean;
+  value: string;
+}
+
+export interface DocumentationString extends STNode {
+  documentationLines: DocumentationLine[];
+}
+
 export interface DotToken extends STNode {
+  isToken: boolean;
+  value: string;
+}
+
+export interface DoubleEqualToken extends STNode {
   isToken: boolean;
   value: string;
 }
@@ -143,7 +293,7 @@ export interface EqualToken extends STNode {
 }
 
 export interface ExpressionListItem extends STNode {
-  expression: IdentifierToken;
+  expression: SimpleNameReference;
 }
 
 export interface ExternalFunctionBody extends STNode {
@@ -158,10 +308,39 @@ export interface ExternalKeyword extends STNode {
   value: string;
 }
 
+export interface FalseKeyword extends STNode {
+  isToken?: boolean;
+  literalToken?: FalseKeyword;
+  value?: string;
+}
+
 export interface FieldAccess extends STNode {
   dotToken: DotToken;
-  expression: FieldAccess | IdentifierToken;
+  expression: DecimalFloatingPointLiteral | FieldAccess | SimpleNameReference;
   fieldName: IdentifierToken;
+}
+
+export interface FloatKeyword extends STNode {
+  isToken: boolean;
+  value: string;
+}
+
+export interface FloatTypeDesc extends STNode {
+  name: FloatKeyword;
+}
+
+export interface ForeachKeyword extends STNode {
+  isToken: boolean;
+  value: string;
+}
+
+export interface ForeachStatement extends STNode {
+  ActionOrExpressionNode: BinaryExpression | SimpleNameReference;
+  blockStatement: BlockStatement;
+  forEachKeyword: ForeachKeyword;
+  inKeyword: InKeyword;
+  typeDescriptor: VarTypeDesc;
+  variableName: IdentifierToken;
 }
 
 export interface FunctionBodyBlock extends STNode {
@@ -172,9 +351,10 @@ export interface FunctionBodyBlock extends STNode {
     | BlockStatement
     | CallStatement
     | CompoundAssignmentStatement
+    | ForeachStatement
     | IfElseStatement
-    | Invalid
     | LocalVarDecl
+    | LockStatement
     | ReturnStatement
   >;
 }
@@ -182,7 +362,7 @@ export interface FunctionBodyBlock extends STNode {
 export interface FunctionCall extends STNode {
   arguments: Array<NamedArg | PositionalArg>;
   closeParenToken: CloseParenToken;
-  functionName: IdentifierToken | QualifiedIdentifier;
+  functionName: QualifiedNameReference | SimpleNameReference;
   openParenToken: OpenParenToken;
 }
 
@@ -199,6 +379,11 @@ export interface FunctionDefinition extends STNode {
 }
 
 export interface FunctionKeyword extends STNode {
+  isToken: boolean;
+  value: string;
+}
+
+export interface GtToken extends STNode {
   isToken: boolean;
   value: string;
 }
@@ -222,8 +407,8 @@ export interface IfKeyword extends STNode {
 
 export interface ImportDeclaration extends STNode {
   importKeyword: ImportKeyword;
-  moduleName: IdentifierToken[];
-  orgName: ImportOrgName;
+  moduleName: Array<DotToken | IdentifierToken>;
+  orgName?: ImportOrgName;
   semicolon: SemicolonToken;
 }
 
@@ -237,14 +422,35 @@ export interface ImportOrgName extends STNode {
   slashToken: SlashToken;
 }
 
-export interface Invalid extends STNode {
-  expression: IdentifierToken | MemberAccess;
-  semicolonToken: SemicolonToken;
+export interface InKeyword extends STNode {
+  isToken: boolean;
+  value: string;
+}
+
+export interface IntKeyword extends STNode {
+  isToken: boolean;
+  value: string;
+}
+
+export interface IntTypeDesc extends STNode {
+  name: IntKeyword;
 }
 
 export interface IsKeyword extends STNode {
   isToken: boolean;
   value: string;
+}
+
+export interface ListConstructor extends STNode {
+  closeBracket: CloseBracketToken;
+  expressions: Array<
+    | CommaToken
+    | DecimalIntegerLiteral
+    | ListConstructor
+    | SimpleNameReference
+    | StringLiteral
+  >;
+  openBracket: OpenBracketToken;
 }
 
 export interface ListenerDeclaration extends STNode {
@@ -253,7 +459,7 @@ export interface ListenerDeclaration extends STNode {
   listenerKeyword: ListenerKeyword;
   metadata: Metadata;
   semicolonToken: SemicolonToken;
-  typeDescriptor: QualifiedIdentifier;
+  typeDescriptor: QualifiedNameReference;
   variableName: IdentifierToken;
 }
 
@@ -269,22 +475,40 @@ export interface LocalVarDecl extends STNode {
     | BinaryExpression
     | DecimalIntegerLiteral
     | FunctionCall
-    | IdentifierToken
+    | ListConstructor
     | MappingConstructor
-    | MemberAccess
+    | MethodCall
     | RemoteMethodCallAction
-    | StringLiteral;
+    | SimpleNameReference
+    | StringLiteral
+    | TypeCastExpression
+    | TypeTestExpression;
   semicolonToken: SemicolonToken;
   typeName:
-    | ArrayType
-    | IdentifierToken
-    | NilType
-    | ObjectTypeDescriptor
-    | QualifiedIdentifier
-    | RecordTypeDescriptor
-    | SimpleType
-    | VarKeyword;
+    | AnyTypeDesc
+    | AnydataTypeDesc
+    | ArrayTypeDesc
+    | ByteTypeDesc
+    | FloatTypeDesc
+    | IntTypeDesc
+    | NilTypeDesc
+    | ObjectTypeDesc
+    | QualifiedNameReference
+    | RecordTypeDesc
+    | SimpleNameReference
+    | StringTypeDesc
+    | VarTypeDesc;
   variableName: IdentifierToken;
+}
+
+export interface LockKeyword extends STNode {
+  isToken: boolean;
+  value: string;
+}
+
+export interface LockStatement extends STNode {
+  blockStatement: BlockStatement;
+  lockKeyword: LockKeyword;
 }
 
 export interface LtToken extends STNode {
@@ -292,48 +516,63 @@ export interface LtToken extends STNode {
   value: string;
 }
 
+export interface MapKeyword extends STNode {
+  isToken: boolean;
+  value: string;
+}
+
 export interface MappingConstructor extends STNode {
   closeBrace: CloseBraceToken;
-  fields: SpecificField[];
+  fields: Array<ComputedNameField | SpecificField | SpreadField>;
   openBrace: OpenBraceToken;
 }
 
 export interface MemberAccess extends STNode {
   closeBracket: CloseBracketToken;
-  containerExpression: IdentifierToken;
-  keyExpression: DecimalIntegerLiteral | IdentifierToken;
+  containerExpression: MethodCall | SimpleNameReference;
+  keyExpression: DecimalIntegerLiteral | SimpleNameReference | StringLiteral;
   openBracket: OpenBracketToken;
 }
 
 export interface Metadata extends STNode {
   annotations: Annotation[];
+  documentationString?: DocumentationString;
 }
 
 export interface MethodCall extends STNode {
   arguments: PositionalArg[];
   closeParenToken: CloseParenToken;
   dotToken: DotToken;
-  expression: IdentifierToken;
+  expression: MemberAccess | SimpleNameReference;
   methodName: IdentifierToken;
   openParenToken: OpenParenToken;
 }
 
 export interface ModuleVarDecl extends STNode {
-  equalsToken: EqualToken;
-  initializer: DecimalIntegerLiteral | MemberAccess;
+  equalsToken?: EqualToken;
+  initializer?:
+    | DecimalIntegerLiteral
+    | ListConstructor
+    | MappingConstructor
+    | SimpleNameReference;
   metadata: Metadata;
   semicolonToken: SemicolonToken;
-  typeName: ArrayType | SimpleType;
+  typeName: ArrayTypeDesc | IntTypeDesc | NilTypeDesc | QualifiedNameReference;
   variableName: IdentifierToken;
 }
 
 export interface NamedArg extends STNode {
-  argumentName: IdentifierToken;
+  argumentName: SimpleNameReference;
   equalsToken: EqualToken;
-  expression: StringLiteral;
+  expression:
+    | MappingConstructor
+    | MemberAccess
+    | SimpleNameReference
+    | StringLiteral;
+  leadingComma?: CommaToken;
 }
 
-export interface NilType extends STNode {
+export interface NilTypeDesc extends STNode {
   closeParenToken: CloseParenToken;
   openParenToken: OpenParenToken;
 }
@@ -342,8 +581,13 @@ export interface ObjectField extends STNode {
   fieldName: IdentifierToken;
   metadata: Metadata;
   semicolonToken: SemicolonToken;
-  typeName: SimpleType;
-  visibilityQualifier: PublicKeyword;
+  typeName:
+    | IntTypeDesc
+    | RecordTypeDesc
+    | SimpleNameReference
+    | StringTypeDesc
+    | TypeDesc;
+  visibilityQualifier?: PublicKeyword;
 }
 
 export interface ObjectKeyword extends STNode {
@@ -351,7 +595,7 @@ export interface ObjectKeyword extends STNode {
   value: string;
 }
 
-export interface ObjectTypeDescriptor extends STNode {
+export interface ObjectTypeDesc extends STNode {
   closeBrace: CloseBraceToken;
   members: Array<FunctionDefinition | ObjectField>;
   objectKeyword: ObjectKeyword;
@@ -384,6 +628,23 @@ export interface OpenParenToken extends STNode {
   value: string;
 }
 
+export interface OptionalTypeDesc extends STNode {
+  questionMarkToken: QuestionMarkToken;
+  typeDescriptor: SimpleNameReference;
+}
+
+export interface ParameterizedTypeDesc extends STNode {
+  gtToken: GtToken;
+  ltToken: LtToken;
+  parameterizedType: MapKeyword;
+  typeNode: NilTypeDesc;
+}
+
+export interface PipeToken extends STNode {
+  isToken: boolean;
+  value: string;
+}
+
 export interface PlusToken extends STNode {
   isToken: boolean;
   value: string;
@@ -391,12 +652,15 @@ export interface PlusToken extends STNode {
 
 export interface PositionalArg extends STNode {
   expression:
+    | BinaryExpression
     | DecimalIntegerLiteral
     | FieldAccess
-    | IdentifierToken
+    | FunctionCall
     | MemberAccess
     | MethodCall
-    | StringLiteral;
+    | SimpleNameReference
+    | StringLiteral
+    | TypeCastExpression;
   leadingComma?: CommaToken;
 }
 
@@ -405,17 +669,22 @@ export interface PublicKeyword extends STNode {
   value: string;
 }
 
-export interface QualifiedIdentifier extends STNode {
+export interface QualifiedNameReference extends STNode {
   colon: ColonToken;
   identifier: IdentifierToken;
   modulePrefix: IdentifierToken;
+}
+
+export interface QuestionMarkToken extends STNode {
+  isToken: boolean;
+  value: string;
 }
 
 export interface RecordField extends STNode {
   fieldName: IdentifierToken;
   metadata: Metadata;
   semicolonToken: SemicolonToken;
-  typeName: ObjectTypeDescriptor | RecordTypeDescriptor | SimpleType;
+  typeName: IntTypeDesc | ObjectTypeDesc | RecordTypeDesc | StringTypeDesc;
 }
 
 export interface RecordKeyword extends STNode {
@@ -423,7 +692,7 @@ export interface RecordKeyword extends STNode {
   value: string;
 }
 
-export interface RecordTypeDescriptor extends STNode {
+export interface RecordTypeDesc extends STNode {
   bodyEndDelimiter: CloseBracePipeToken | CloseBraceToken;
   bodyStartDelimiter: OpenBracePipeToken | OpenBraceToken;
   fields: RecordField[];
@@ -433,17 +702,22 @@ export interface RecordTypeDescriptor extends STNode {
 export interface RemoteMethodCallAction extends STNode {
   arguments: PositionalArg[];
   closeParenToken: CloseParenToken;
-  expression: IdentifierToken;
+  expression: SimpleNameReference;
   methodName: IdentifierToken;
   openParenToken: OpenParenToken;
   rightArrowToken: RightArrowToken;
 }
 
 export interface RequiredParam extends STNode {
-  annotations: Annotation[];
+  annotations: any;
   leadingComma?: CommaToken;
   paramName: IdentifierToken;
-  typeName: RecordTypeDescriptor | SimpleType;
+  typeName:
+    | IntTypeDesc
+    | QualifiedNameReference
+    | RecordTypeDesc
+    | SimpleNameReference
+    | StringTypeDesc;
 }
 
 export interface ResourceKeyword extends STNode {
@@ -455,7 +729,7 @@ export interface RestParam extends STNode {
   annotations: any;
   ellipsisToken: EllipsisToken;
   paramName: IdentifierToken;
-  typeName: SimpleType;
+  typeName: AnyTypeDesc;
 }
 
 export interface ReturnKeyword extends STNode {
@@ -464,7 +738,12 @@ export interface ReturnKeyword extends STNode {
 }
 
 export interface ReturnStatement extends STNode {
-  expression: BinaryExpression | IdentifierToken;
+  expression:
+    | BinaryExpression
+    | FalseKeyword
+    | FieldAccess
+    | SimpleNameReference
+    | TrueKeyword;
   returnKeyword: ReturnKeyword;
   semicolonToken: SemicolonToken;
 }
@@ -472,7 +751,15 @@ export interface ReturnStatement extends STNode {
 export interface ReturnTypeDescriptor extends STNode {
   annotations: any;
   returnsKeyword: ReturnsKeyword;
-  type: ArrayType | SimpleType;
+  type:
+    | AnyTypeDesc
+    | AnydataTypeDesc
+    | ArrayTypeDesc
+    | BooleanTypeDesc
+    | FloatTypeDesc
+    | IntTypeDesc
+    | OptionalTypeDesc
+    | StringTypeDesc;
 }
 
 export interface ReturnsKeyword extends STNode {
@@ -510,9 +797,8 @@ export interface ServiceKeyword extends STNode {
   value: string;
 }
 
-export interface SimpleType extends STNode {
-  isToken: boolean;
-  value: string;
+export interface SimpleNameReference extends STNode {
+  name: IdentifierToken;
 }
 
 export interface SlashToken extends STNode {
@@ -521,27 +807,47 @@ export interface SlashToken extends STNode {
 }
 
 export interface SpecificField extends STNode {
-  colon?: ColonToken;
+  colon: ColonToken;
   fieldName: IdentifierToken;
   leadingComma?: CommaToken;
-  valueExpr?:
+  valueExpr:
+    | BinaryExpression
     | DecimalIntegerLiteral
     | FunctionCall
-    | IdentifierToken
+    | ListConstructor
     | MappingConstructor
+    | SimpleNameReference
     | StringLiteral;
 }
 
-export interface StringLiteral extends STNode {
+export interface SpreadField extends STNode {
+  ellipsis: EllipsisToken;
+  valueExpr: BracedExpression;
+}
+
+export interface StringKeyword extends STNode {
   isToken: boolean;
   value: string;
+}
+
+export interface StringLiteral extends STNode {
+  isToken?: boolean;
+  literalToken?: StringLiteral;
+  value?: string;
+}
+
+export interface StringTypeDesc extends STNode {
+  name: StringKeyword;
 }
 
 export interface SyntaxTree extends STNode {
   eofToken: EofToken;
   imports: ImportDeclaration[];
   members: Array<
+    | ConstDeclaration
+    | EofToken
     | FunctionDefinition
+    | ImportDeclaration
     | ListenerDeclaration
     | ModuleVarDecl
     | ServiceDeclaration
@@ -549,13 +855,35 @@ export interface SyntaxTree extends STNode {
   >;
 }
 
+export interface TrueKeyword extends STNode {
+  isToken?: boolean;
+  literalToken?: TrueKeyword;
+  value?: string;
+}
+
+export interface TypeCastExpression extends STNode {
+  expression: CheckExpression | MemberAccess | SimpleNameReference;
+  gtToken: GtToken;
+  ltToken: LtToken;
+  typeCastParam: TypeCastParam;
+}
+
+export interface TypeCastParam extends STNode {
+  type: IntTypeDesc | SimpleNameReference | StringTypeDesc;
+}
+
 export interface TypeDefinition extends STNode {
   metadata: Metadata;
   semicolonToken: SemicolonToken;
-  typeDescriptor: ObjectTypeDescriptor | RecordTypeDescriptor;
+  typeDescriptor: ObjectTypeDesc | RecordTypeDesc;
   typeKeyword: TypeKeyword;
   typeName: IdentifierToken;
   visibilityQualifier?: PublicKeyword;
+}
+
+export interface TypeDesc extends STNode {
+  isToken: boolean;
+  value: string;
 }
 
 export interface TypeKeyword extends STNode {
@@ -564,14 +892,23 @@ export interface TypeKeyword extends STNode {
 }
 
 export interface TypeTestExpression extends STNode {
-  expression: IdentifierToken;
+  expression: FieldAccess | SimpleNameReference;
   isKeyword: IsKeyword;
-  typeDescriptor: IdentifierToken | QualifiedIdentifier;
+  typeDescriptor:
+    | IntTypeDesc
+    | ParameterizedTypeDesc
+    | QualifiedNameReference
+    | SimpleNameReference
+    | StringTypeDesc;
 }
 
 export interface VarKeyword extends STNode {
   isToken: boolean;
   value: string;
+}
+
+export interface VarTypeDesc extends STNode {
+  name: VarKeyword;
 }
 
 // tslint:enable:ban-types
