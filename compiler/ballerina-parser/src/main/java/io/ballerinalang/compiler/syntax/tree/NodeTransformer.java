@@ -120,6 +120,18 @@ public abstract class NodeTransformer<T> {
         return transformSyntaxNode(localTypeDefinitionStatementNode);
     }
 
+    public T transform(LockStatementNode lockStatementNode) {
+        return transformSyntaxNode(lockStatementNode);
+    }
+
+    public T transform(ForkStatementNode forkStatementNode) {
+        return transformSyntaxNode(forkStatementNode);
+    }
+
+    public T transform(ForEachStatementNode forEachStatementNode) {
+        return transformSyntaxNode(forEachStatementNode);
+    }
+
     public T transform(BinaryExpressionNode binaryExpressionNode) {
         return transformSyntaxNode(binaryExpressionNode);
     }
@@ -200,10 +212,6 @@ public abstract class NodeTransformer<T> {
         return transformSyntaxNode(importVersionNode);
     }
 
-    public T transform(SubModuleNameNode subModuleNameNode) {
-        return transformSyntaxNode(subModuleNameNode);
-    }
-
     public T transform(SpecificFieldNode specificFieldNode) {
         return transformSyntaxNode(specificFieldNode);
     }
@@ -264,10 +272,6 @@ public abstract class NodeTransformer<T> {
         return transformSyntaxNode(typeReferenceNode);
     }
 
-    public T transform(QualifiedIdentifierNode qualifiedIdentifierNode) {
-        return transformSyntaxNode(qualifiedIdentifierNode);
-    }
-
     public T transform(ServiceBodyNode serviceBodyNode) {
         return transformSyntaxNode(serviceBodyNode);
     }
@@ -296,8 +300,84 @@ public abstract class NodeTransformer<T> {
         return transformSyntaxNode(remoteMethodCallActionNode);
     }
 
+    public T transform(ParameterizedTypeDescriptorNode parameterizedTypeDescriptorNode) {
+        return transformSyntaxNode(parameterizedTypeDescriptorNode);
+    }
+
     public T transform(NilLiteralNode nilLiteralNode) {
         return transformSyntaxNode(nilLiteralNode);
+    }
+
+    public T transform(AnnotationDeclarationNode annotationDeclarationNode) {
+        return transformSyntaxNode(annotationDeclarationNode);
+    }
+
+    public T transform(AnnotationAttachPointNode annotationAttachPointNode) {
+        return transformSyntaxNode(annotationAttachPointNode);
+    }
+
+    public T transform(XMLNamespaceDeclarationNode xMLNamespaceDeclarationNode) {
+        return transformSyntaxNode(xMLNamespaceDeclarationNode);
+    }
+
+    public T transform(FunctionBodyBlockNode functionBodyBlockNode) {
+        return transformSyntaxNode(functionBodyBlockNode);
+    }
+
+    public T transform(NamedWorkerDeclarationNode namedWorkerDeclarationNode) {
+        return transformSyntaxNode(namedWorkerDeclarationNode);
+    }
+
+    public T transform(NamedWorkerDeclarator namedWorkerDeclarator) {
+        return transformSyntaxNode(namedWorkerDeclarator);
+    }
+
+    public T transform(DocumentationStringNode documentationStringNode) {
+        return transformSyntaxNode(documentationStringNode);
+    }
+
+    public T transform(BasicLiteralNode basicLiteralNode) {
+        return transformSyntaxNode(basicLiteralNode);
+    }
+
+    public T transform(SimpleNameReferenceNode simpleNameReferenceNode) {
+        return transformSyntaxNode(simpleNameReferenceNode);
+    }
+
+    public T transform(QualifiedNameReferenceNode qualifiedNameReferenceNode) {
+        return transformSyntaxNode(qualifiedNameReferenceNode);
+    }
+
+    public T transform(BuiltinSimpleNameReferenceNode builtinSimpleNameReferenceNode) {
+        return transformSyntaxNode(builtinSimpleNameReferenceNode);
+    }
+
+    public T transform(TrapExpressionNode trapExpressionNode) {
+        return transformSyntaxNode(trapExpressionNode);
+    }
+
+    public T transform(ListConstructorExpressionNode listConstructorExpressionNode) {
+        return transformSyntaxNode(listConstructorExpressionNode);
+    }
+
+    public T transform(TypeCastExpressionNode typeCastExpressionNode) {
+        return transformSyntaxNode(typeCastExpressionNode);
+    }
+
+    public T transform(TypeCastParamNode typeCastParamNode) {
+        return transformSyntaxNode(typeCastParamNode);
+    }
+
+    public T transform(UnionTypeDescriptorNode unionTypeDescriptorNode) {
+        return transformSyntaxNode(unionTypeDescriptorNode);
+    }
+
+    public T transform(TableConstructorExpressionNode tableConstructorExpressionNode) {
+        return transformSyntaxNode(tableConstructorExpressionNode);
+    }
+
+    public T transform(KeySpecifierNode keySpecifierNode) {
+        return transformSyntaxNode(keySpecifierNode);
     }
 
     // Tokens

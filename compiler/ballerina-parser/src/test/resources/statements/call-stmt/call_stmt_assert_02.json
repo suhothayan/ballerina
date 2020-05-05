@@ -33,7 +33,7 @@
             "kind": "CLOSE_PAREN_TOKEN"
         },
         {
-            "kind": "BLOCK_STATEMENT",
+            "kind": "FUNCTION_BODY_BLOCK",
             "children": [
                 {
                     "kind": "OPEN_BRACE_TOKEN"
@@ -48,7 +48,7 @@
                                     "kind": "FUNCTION_CALL",
                                     "children": [
                                         {
-                                            "kind": "QUALIFIED_IDENTIFIER",
+                                            "kind": "QUALIFIED_NAME_REFERENCE",
                                             "children": [
                                                 {
                                                     "kind": "IDENTIFIER_TOKEN",

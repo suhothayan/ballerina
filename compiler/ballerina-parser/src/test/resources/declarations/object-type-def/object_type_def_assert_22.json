@@ -30,7 +30,7 @@
             "kind": "CLOSE_PAREN_TOKEN"
         },
         {
-            "kind": "BLOCK_STATEMENT",
+            "kind": "FUNCTION_BODY_BLOCK",
             "children": [
                 {
                     "kind": "OPEN_BRACE_TOKEN"
@@ -47,7 +47,7 @@
                                     ]
                                 },
                                 {
-                                    "kind": "OBJECT_TYPE_DESCRIPTOR",
+                                    "kind": "OBJECT_TYPE_DESC",
                                     "children": [
                                         {
                                             "kind": "LIST",
@@ -80,8 +80,7 @@
                                                             ]
                                                         },
                                                         {
-                                                            "kind": "SIMPLE_TYPE",
-                                                            "value": "int"
+                                                            "kind": "INT_KEYWORD"
                                                         },
                                                         {
                                                             "kind": "IDENTIFIER_TOKEN",
@@ -124,7 +123,7 @@
                                                             "kind": "CLOSE_PAREN_TOKEN"
                                                         },
                                                         {
-                                                            "kind": "BLOCK_STATEMENT",
+                                                            "kind": "FUNCTION_BODY_BLOCK",
                                                             "children": [
                                                                 {
                                                                     "kind": "OPEN_BRACE_TOKEN"
@@ -155,8 +154,7 @@
                                                             ]
                                                         },
                                                         {
-                                                            "kind": "SIMPLE_TYPE",
-                                                            "value": "int"
+                                                            "kind": "INT_KEYWORD"
                                                         },
                                                         {
                                                             "kind": "IDENTIFIER_TOKEN",

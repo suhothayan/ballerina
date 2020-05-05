@@ -17,6 +17,7 @@
  */
 package io.ballerinalang.compiler.parser.test.tree;
 
+import io.ballerinalang.compiler.syntax.tree.FunctionBodyBlockNode;
 import io.ballerinalang.compiler.syntax.tree.FunctionDefinitionNode;
 import io.ballerinalang.compiler.syntax.tree.IdentifierToken;
 import io.ballerinalang.compiler.syntax.tree.ModulePartNode;
@@ -38,27 +39,29 @@ public class SyntaxTreeModifierTest extends AbstractSyntaxTreeAPITest {
     @Test
     public void testVarDeclStmtModification() {
         SyntaxTree syntaxTree = parseFile("variable_decl_stmt_modify.bal");
-        ModulePartNode oldRoot = syntaxTree.getModulePart();
+        ModulePartNode oldRoot = syntaxTree.modulePart();
 
         VariableDeclModifier variableDeclModifier = new VariableDeclModifier();
         ModulePartNode newRoot = (ModulePartNode) oldRoot.apply(variableDeclModifier);
 
         FunctionDefinitionNode oldFuncNode = (FunctionDefinitionNode) oldRoot.members().get(0);
-        VariableDeclarationNode oldStmt = (VariableDeclarationNode) oldFuncNode.functionBody().statements().get(0);
+        FunctionBodyBlockNode oldFuncBody = (FunctionBodyBlockNode) oldFuncNode.functionBody();
+        VariableDeclarationNode oldStmt = (VariableDeclarationNode) oldFuncBody.statements().get(0);
 
         FunctionDefinitionNode newFuncNode = (FunctionDefinitionNode) newRoot.members().get(0);
-        VariableDeclarationNode newStmt = (VariableDeclarationNode) newFuncNode.functionBody().statements().get(0);
+        FunctionBodyBlockNode newFuncBody = (FunctionBodyBlockNode) newFuncNode.functionBody();
+        VariableDeclarationNode newStmt = (VariableDeclarationNode) newFuncBody.statements().get(0);
 
         Assert.assertNotEquals(newFuncNode, oldFuncNode);
         Assert.assertNotEquals(newStmt, oldStmt);
         Assert.assertEquals(newStmt.variableName().text(), oldStmt.variableName().text() + "new");
-        Assert.assertEquals(newStmt.spanWithMinutiae().width(), oldStmt.spanWithMinutiae().width() + 2);
+        Assert.assertEquals(newStmt.textRangeWithMinutiae().length(), oldStmt.textRangeWithMinutiae().length() + 2);
     }
 
     @Test
     public void testRenameIdentifierWithoutTrivia() {
         SyntaxTree syntaxTree = parseFile("variable_decl_stmt_modify.bal");
-        ModulePartNode oldRoot = syntaxTree.getModulePart();
+        ModulePartNode oldRoot = syntaxTree.modulePart();
 
         IdentifierModifier identifierModifier = new IdentifierModifier();
         ModulePartNode newRoot = (ModulePartNode) oldRoot.apply(identifierModifier);

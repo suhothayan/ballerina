@@ -19,7 +19,7 @@
             "value": "Student"
         },
         {
-            "kind": "RECORD_TYPE_DESCRIPTOR",
+            "kind": "RECORD_TYPE_DESC",
             "children": [
                 {
                     "kind": "RECORD_KEYWORD"
@@ -35,33 +35,6 @@
                             "children": [
                                 {
                                     "kind": "ASTERISK_TOKEN"
-                                },
-                                {
-                                    "kind": "IDENTIFIER_TOKEN",
-                                    "isMissing": true
-                                },
-                                {
-                                    "kind": "SEMICOLON_TOKEN",
-                                    "isMissing": true
-                                }
-                            ]
-                        },
-                        {
-                            "kind": "RECORD_FIELD",
-                            "children": [
-                                {
-                                    "kind": "METADATA",
-                                    "children": [
-                                        {
-                                            "kind": "LIST",
-                                            "children": [
-                                            ]
-                                        }
-                                    ]
-                                },
-                                {
-                                    "kind": "SIMPLE_TYPE",
-                                    "value": "string"
                                 },
                                 {
                                     "kind": "IDENTIFIER_TOKEN",
