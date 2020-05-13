@@ -61,22 +61,8 @@
                     "type": "IdentifierToken"
                 },
                 {
-                    "name": "openParenToken",
-                    "type": "Token"
-                },
-                {
-                    "name": "parameters",
-                    "type": "ParameterNode",
-                    "occurrences": "MULTIPLE"
-                },
-                {
-                    "name": "closeParenToken",
-                    "type": "Token"
-                },
-                {
-                    "name": "returnTypeDesc",
-                    "type": "Node",
-                    "isOptional": true
+                    "name": "functionSignature",
+                    "type": "FunctionSignatureNode"
                 },
                 {
                     "name": "functionBody",
@@ -1110,7 +1096,7 @@
                 },
                 {
                     "name": "argumentName",
-                    "type": "Token"
+                    "type": "SimpleNameReferenceNode"
                 },
                 {
                     "name": "equalsToken",
@@ -1231,7 +1217,7 @@
         },
         {
             "name": "NilTypeDescriptorNode",
-            "base": "Node",
+            "base": "TypeDescriptorNode",
             "kind": "NIL_TYPE_DESC",
             "attributes": [
                 {
@@ -1887,7 +1873,7 @@
         },
         {
             "name": "UnionTypeDescriptorNode",
-            "base": "Node",
+            "base": "TypeDescriptorNode",
             "kind": "UNION_TYPE_DESC",
             "attributes": [
                 {
@@ -1958,7 +1944,7 @@
         },
         {
             "name": "ErrorTypeDescriptorNode",
-            "base": "Node",
+            "base": "TypeDescriptorNode",
             "kind": "ERROR_TYPE_DESC",
             "attributes": [
                 {
@@ -1982,6 +1968,48 @@
                 },
                 {
                     "name": "parameter",
+                    "type": "Node"
+                },
+                {
+                    "name": "gtToken",
+                    "type": "Token"
+                }
+            ]
+        },
+        {
+            "name": "StreamTypeDescriptorNode",
+            "base": "TypeDescriptorNode",
+            "kind": "STREAM_TYPE_DESC",
+            "attributes": [
+                {
+                    "name": "streamKeywordToken",
+                    "type": "Token"
+                },
+                {
+                    "name": "streamTypeParamsNode",
+                    "type": "Node"
+                }
+            ]
+        },
+        {
+            "name": "StreamTypeParamsNode",
+            "base": "Node",
+            "kind": "STREAM_TYPE_PARAMS",
+            "attributes": [
+                {
+                    "name": "ltToken",
+                    "type": "Token"
+                },
+                {
+                    "name": "leftTypeDescNode",
+                    "type": "Node"
+                },
+                {
+                    "name": "commaToken",
+                    "type": "Token"
+                },
+                {
+                    "name": "rightTypeDescNode",
                     "type": "Node"
                 },
                 {
@@ -2319,6 +2347,113 @@
                 },
                 {
                     "name": "piEnd",
+                    "type": "Token"
+                }
+            ]
+        },
+        {
+            "name": "FunctionTypeDescriptorNode",
+            "base": "TypeDescriptorNode",
+            "kind": "FUNCTION_TYPE_DESC",
+            "attributes": [
+                {
+                    "name": "functionKeyword",
+                    "type": "Token"
+                },
+                {
+                    "name": "functionSignature",
+                    "type": "FunctionSignatureNode"
+                }
+            ]
+        },
+        {
+            "name": "AnonymousFunctionExpressionNode",
+            "base": "ExpressionNode",
+            "kind": "ANONYMOUS_FUNCTION_EXPRESSION",
+            "attributes": [
+                {
+                    "name": "annotations",
+                    "type": "AnnotationNode",
+                    "occurrences": "MULTIPLE"
+                },
+                {
+                    "name": "functionKeyword",
+                    "type": "Token"
+                },
+                {
+                    "name": "functionSignature",
+                    "type": "FunctionSignatureNode"
+                },
+                {
+                    "name": "functionBody",
+                    "type": "Node"
+                }
+            ]
+        },
+        {
+            "name": "FunctionSignatureNode",
+            "base": "Node",
+            "kind": "FUNCTION_SIGNATURE",
+            "attributes": [
+                {
+                    "name": "openParenToken",
+                    "type": "Token"
+                },
+                {
+                    "name": "parameters",
+                    "type": "ParameterNode",
+                    "occurrences": "MULTIPLE"
+                },
+                {
+                    "name": "closeParenToken",
+                    "type": "Token"
+                },
+                {
+                    "name": "returnTypeDesc",
+                    "type": "ReturnTypeDescriptorNode",
+                    "isOptional": true
+                }
+            ]
+        },
+        {
+            "name": "TupleTypeDescriptorNode",
+            "base": "TypeDescriptorNode",
+            "kind": "TUPLE_TYPE_DESC",
+            "attributes": [
+                {
+                    "name": "openBracketToken",
+                    "type": "Token"
+                },
+                {
+                    "name": "memberTypeDesc",
+                    "type": "TypeDescriptorNode",
+                    "occurrences": "MULTIPLE_SEPARATED"
+                },
+                {
+                    "name": "restTypeDesc",
+                    "type": "Node"
+                },
+                {
+                    "name": "closeBracketToken",
+                    "type": "Token"
+                }
+            ]
+        },
+        {
+            "name": "ParenthesisedTypeDescriptorNode",
+            "base": "TypeDescriptorNode",
+            "kind": "PARENTHESISED_TYPE_DESC",
+            "attributes": [
+                {
+                    "name": "openParenToken",
+                    "type": "Token"
+                },
+                {
+                    "name": "typedesc",
+                    "type": "TypeDescriptorNode"
+                },
+                {
+                    "name": "closeParenToken",
                     "type": "Token"
                 }
             ]
