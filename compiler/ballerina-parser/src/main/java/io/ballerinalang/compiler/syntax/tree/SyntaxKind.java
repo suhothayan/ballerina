@@ -70,6 +70,7 @@ public enum SyntaxKind {
     TABLE_KEYWORD(221, "table"),
     KEY_KEYWORD(222, "key"),
     LET_KEYWORD(223, "let"),
+    NEW_KEYWORD(224, "new"),
 
     // Type keywords
     INT_KEYWORD(250, "int"),
@@ -89,6 +90,7 @@ public enum SyntaxKind {
     FUTURE_KEYWORD(264, "future"),
     TYPEDESC_KEYWORD(265, "typedesc"),
     ERROR_KEYWORD(266,"error"),
+    STREAM_KEYWORD(267,"stream"),
 
     // Separators
     OPEN_BRACE_TOKEN(500, "{"),
@@ -109,7 +111,7 @@ public enum SyntaxKind {
     BACKTICK_TOKEN(515, "`"),
     DOUBLE_QUOTE_TOKEN(516, "\""),
     SINGLE_QUOTE_TOKEN(517, "'"),
-    
+
     // Operators
     EQUAL_TOKEN(550, "="),
     DOUBLE_EQUAL_TOKEN(551, "=="),
@@ -209,6 +211,11 @@ public enum SyntaxKind {
     LET_EXPRESSION(1318),
     XML_TEMPLATE_EXPRESSION(1319),
     RAW_TEMPLATE_EXPRESSION(1320),
+    STRING_TEMPLATE_EXPRESSION(1321),
+    ANONYMOUS_FUNCTION_EXPRESSION(1322),
+    IMPLICIT_NEW(1323),
+    EXPLICIT_NEW(1324),
+    PARENTHESIZED_ARG_LIST(1325),
 
     // Type descriptors
     TYPE_DESC(2000),
@@ -234,6 +241,10 @@ public enum SyntaxKind {
     PARAMETERIZED_TYPE_DESC(2020),
     UNION_TYPE_DESC(2021),
     ERROR_TYPE_DESC(2022),
+    STREAM_TYPE_DESC(2023),
+    FUNCTION_TYPE_DESC(2024),
+    TUPLE_TYPE_DESC(2025),
+    PARENTHESISED_TYPE_DESC(2026),
 
     // Actions
     REMOTE_METHOD_CALL_ACTION(2500),
@@ -279,6 +290,8 @@ public enum SyntaxKind {
     EXPLICIT_TYPE_PARAMS(3034),
     ERROR_TYPE_PARAMS(3035),
     LET_VAR_DECL(3036),
+    STREAM_TYPE_PARAMS(3037),
+    FUNCTION_SIGNATURE(3038),
 
     // XML
     XML_ELEMENT(4000),
