@@ -20,6 +20,11 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.ballerinalang.compiler.syntax.tree.SyntaxTree;
+import io.ballerinalang.compiler.text.StringTextDocument;
+import io.ballerinalang.compiler.text.TextDocument;
+import io.ballerinalang.compiler.text.TextDocumentChange;
+import io.ballerinalang.compiler.text.TextDocuments;
 import org.ballerinalang.ballerina.openapi.convertor.service.OpenApiConverterUtils;
 import org.ballerinalang.compiler.CompilerPhase;
 import org.ballerinalang.langserver.BallerinaLanguageServer;
@@ -192,10 +197,10 @@ public class BallerinaDocumentServiceImpl implements BallerinaDocumentService {
                 TextEdit textEdit = new TextEdit(range, textEditContent);
                 ApplyWorkspaceEditParams applyWorkspaceEditParams = new ApplyWorkspaceEditParams();
                 TextDocumentEdit textDocumentEdit = new TextDocumentEdit(params.getDocumentIdentifier(),
-                                                                         Collections.singletonList(textEdit));
+                        Collections.singletonList(textEdit));
                 WorkspaceEdit workspaceEdit = new WorkspaceEdit(Collections
-                                                                        .singletonList(
-                                                                                Either.forLeft(textDocumentEdit)));
+                        .singletonList(
+                                Either.forLeft(textDocumentEdit)));
                 applyWorkspaceEditParams.setEdit(workspaceEdit);
 
                 ballerinaLanguageServer.getClient().applyEdit(applyWorkspaceEditParams);
@@ -233,8 +238,8 @@ public class BallerinaDocumentServiceImpl implements BallerinaDocumentService {
 
                 List<TopLevelNode> servicePkgs = new ArrayList<>();
                 servicePkgs.addAll(compilationUnit.getTopLevelNodes().stream()
-                                           .filter(topLevelNode -> topLevelNode instanceof ServiceNode)
-                                           .collect(Collectors.toList()));
+                        .filter(topLevelNode -> topLevelNode instanceof ServiceNode)
+                        .collect(Collectors.toList()));
 
                 servicePkgs.forEach(servicepkg -> {
                     if (servicepkg instanceof ServiceNode) {
@@ -270,12 +275,83 @@ public class BallerinaDocumentServiceImpl implements BallerinaDocumentService {
                     .withCommonParams(null, fileUri, documentManager)
                     .build();
             LSModuleCompiler.getBLangPackage(astContext, this.documentManager, LSCustomErrorStrategy.class, false,
-                                             false);
+                    false);
             reply.setAst(getTreeForContent(astContext));
             reply.setParseSuccess(true);
         } catch (Throwable e) {
             reply.setParseSuccess(false);
             String msg = "Operation 'ballerinaDocument/ast' failed!";
+            logError(msg, e, request.getDocumentIdentifier(), (Position) null);
+        } finally {
+            lock.ifPresent(Lock::unlock);
+        }
+        return CompletableFuture.supplyAsync(() -> reply);
+    }
+
+    @Override
+    public CompletableFuture<BallerinaSyntaxTreeResponse> syntaxTree(BallerinaSyntaxTreeRequest request) {
+        BallerinaSyntaxTreeResponse reply = new BallerinaSyntaxTreeResponse();
+        String fileUri = request.getDocumentIdentifier().getUri();
+        Optional<Path> filePath = CommonUtil.getPathFromURI(fileUri);
+        if (!filePath.isPresent()) {
+            return CompletableFuture.supplyAsync(() -> reply);
+        }
+        Path compilationPath = getUntitledFilePath(filePath.get().toString()).orElse(filePath.get());
+        Optional<Lock> lock = documentManager.lockFile(compilationPath);
+        try {
+            TextDocument doc = new StringTextDocument(documentManager.getFileContent(compilationPath));
+            SyntaxTreeMapGenerator mapGenerator = new SyntaxTreeMapGenerator();
+            SyntaxTree syntaxTree = SyntaxTree.from(doc, compilationPath.toString());
+            reply.setSyntaxTree(mapGenerator.transform(syntaxTree.modulePart()));
+            reply.setParseSuccess(true);
+        } catch (Throwable e) {
+            reply.setParseSuccess(false);
+            String msg = "Operation 'ballerinaDocument/syntaxTree' failed!";
+            logError(msg, e, request.getDocumentIdentifier(), (Position) null);
+        } finally {
+            lock.ifPresent(Lock::unlock);
+        }
+        return CompletableFuture.supplyAsync(() -> reply);
+    }
+
+    @Override
+    public CompletableFuture<BallerinaSyntaxTreeResponse> syntaxTreeModify(BallerinaSyntaxTreeModifyRequest request) {
+        BallerinaSyntaxTreeResponse reply = new BallerinaSyntaxTreeResponse();
+        String fileUri = request.getDocumentIdentifier().getUri();
+        Optional<Path> filePath = CommonUtil.getPathFromURI(fileUri);
+        if (!filePath.isPresent()) {
+            return CompletableFuture.supplyAsync(() -> reply);
+        }
+        Path compilationPath = getUntitledFilePath(filePath.get().toString()).orElse(filePath.get());
+        Optional<Lock> lock = documentManager.lockFile(compilationPath);
+        try {
+            String fileContent = documentManager.getFileContent(compilationPath);
+            TextDocument textDocument = TextDocuments.from(fileContent);
+            SyntaxTree oldTree = SyntaxTree.from(textDocument, compilationPath.toString());
+
+            ArrayList<io.ballerinalang.compiler.text.TextEdit> edits =
+                    new ArrayList<>(request.getAstModifications().length);
+            for (int i = 0; i < request.getAstModifications().length; i++) {
+                ASTModification astModification = request.getAstModifications()[i];
+                String mapping = BallerinaSyntaxTreeModifyUtil.resolveMapping(astModification.getType(),
+                        astModification.getConfig() == null ? new JsonObject() : astModification.getConfig());
+                if (mapping != null) {
+                    edits.add(new io.ballerinalang.compiler.text.TextEdit(
+                            new io.ballerinalang.compiler.text.TextRange(astModification.getStartOffset(),
+                                    astModification.getEndOffset()), mapping));
+                }
+            }
+            TextDocumentChange textDocumentChange = new TextDocumentChange(edits.toArray(
+                    new io.ballerinalang.compiler.text.TextEdit[0]));
+            SyntaxTree updatedTree = SyntaxTree.from(oldTree, textDocumentChange);
+            documentManager.updateFile(compilationPath, updatedTree.toString());
+
+            SyntaxTreeMapGenerator mapGenerator = new SyntaxTreeMapGenerator();
+            reply.setSyntaxTree( mapGenerator.transform(updatedTree.modulePart()));
+            reply.setParseSuccess(true);
+        } catch (Throwable e) {
+            reply.setParseSuccess(false);
+            String msg = "Operation 'ballerinaDocument/syntaxTreeModify' failed!";
             logError(msg, e, request.getDocumentIdentifier(), (Position) null);
         } finally {
             lock.ifPresent(Lock::unlock);
@@ -315,7 +391,7 @@ public class BallerinaDocumentServiceImpl implements BallerinaDocumentService {
             TextEdit textEdit = new TextEdit(range, textEditContent);
             ApplyWorkspaceEditParams applyWorkspaceEditParams = new ApplyWorkspaceEditParams();
             TextDocumentEdit txtDocumentEdit = new TextDocumentEdit(notification.getTextDocumentIdentifier(),
-                                                                    Collections.singletonList(textEdit));
+                    Collections.singletonList(textEdit));
 
             WorkspaceEdit workspaceEdit = new WorkspaceEdit(Collections.singletonList(Either.forLeft(txtDocumentEdit)));
             applyWorkspaceEditParams.setEdit(workspaceEdit);

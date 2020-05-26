@@ -5,8 +5,8 @@ import { InitializeParams, InitializeResult,
 import { BallerinaASTNode, BallerinaEndpoint, BallerinaSourceFragment } from "./ast-models";
 import { ASTDidChangeParams, ASTDidChangeResponse, BallerinaExampleListParams,
     BallerinaExampleListResponse, BallerinaProject, GetASTParams, GetASTResponse,
-    GetBallerinaProjectParams, GetProjectASTParams, GetProjectASTResponse, GoToSourceParams,
-    IBallerinaLangClient, RevealRangeParams } from "./model";
+    GetBallerinaProjectParams, GetProjectASTParams, GetProjectASTResponse, GetSyntaxTreeParams,
+    GetSyntaxTreeResponse, GoToSourceParams, IBallerinaLangClient, RevealRangeParams } from "./model";
 
 export class BallerinaLangClient implements IBallerinaLangClient {
 
@@ -19,10 +19,10 @@ export class BallerinaLangClient implements IBallerinaLangClient {
     public init(params: InitializeParams = initParams): Thenable<InitializeResult> {
         this.lsConnection.listen();
         return this.lsConnection.initialize(params)
-                .then((resp) => {
-                    this.isInitialized = true;
-                    return resp;
-                });
+            .then((resp) => {
+                this.isInitialized = true;
+                return resp;
+            });
     }
 
     public getProjectAST(params: GetProjectASTParams): Thenable<GetProjectASTResponse> {
@@ -31,6 +31,10 @@ export class BallerinaLangClient implements IBallerinaLangClient {
 
     public getAST(params: GetASTParams): Thenable<GetASTResponse> {
         return this.lsConnection.sendRequest<GetASTResponse>("ballerinaDocument/ast", params);
+    }
+
+    public getSyntaxTree(params: GetSyntaxTreeParams): Thenable<GetSyntaxTreeResponse> {
+        return this.lsConnection.sendRequest<GetSyntaxTreeResponse>("ballerinaDocument/syntaxTree", params);
     }
 
     public astDidChange(params: ASTDidChangeParams): Thenable<ASTDidChangeResponse> {
